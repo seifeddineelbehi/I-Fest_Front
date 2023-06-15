@@ -3,14 +3,14 @@ import 'package:google_fonts/google_fonts.dart';
 
 class CustomButton extends StatelessWidget {
   final VoidCallback onPressed;
-  final String text;
+  final Widget child;
   final double height;
   final double fontSize;
   final int colorPrimary;
   CustomButton({
     Key? key,
     required this.onPressed,
-    required this.text,
+    required this.child,
     this.height = 48,
     this.fontSize = 16,
     this.colorPrimary = 0xFF333333,
@@ -20,7 +20,7 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: onPressed,
-      child: Text(text),
+      child: child,
       style: ElevatedButton.styleFrom(
         primary: Color(colorPrimary),
         shape: RoundedRectangleBorder(

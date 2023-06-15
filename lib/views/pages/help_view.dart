@@ -40,7 +40,7 @@ class HelpView extends StatelessWidget {
                   arguments: {'type': "Lost & Found"},
                 );
               },
-              text: "Lost & Found",
+              child: Text("Lost & Found"),
               height: SizeConfig.blockSizeVertical * 12,
               fontSize: 20,
               colorPrimary: 0xff0d0d0d,
@@ -56,7 +56,7 @@ class HelpView extends StatelessWidget {
                   arguments: {'type': "Medical Assistance"},
                 );
               },
-              text: "Medical Assistance",
+              child: Text("Medical Assistance"),
               height: SizeConfig.blockSizeVertical * 12,
               fontSize: 20,
               colorPrimary: 0xff0d0d0d,
@@ -72,7 +72,7 @@ class HelpView extends StatelessWidget {
                   arguments: {'type': "Call For Help"},
                 );
               },
-              text: "Call For Help",
+              child: Text("Call For Help"),
               height: SizeConfig.blockSizeVertical * 12,
               fontSize: 20,
               colorPrimary: 0xff0d0d0d,
