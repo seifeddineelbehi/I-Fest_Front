@@ -6,9 +6,9 @@ import 'package:flutter_template/views/components/custom_button.dart';
 import 'package:flutter_template/views/components/custom_text_form_field.dart';
 import 'package:flutter_template/views/components/gradiant_custom_button.dart';
 import 'package:flutter_template/views/pages/Authentication/login_view.dart';
-import 'package:flutter_template/views/pages/home_view.dart';
 import 'package:flutter_template/views/views.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
 import 'dart:developer';
 
@@ -30,6 +30,22 @@ class _SignUpState extends State<SignUp> {
   var _projectId = "";
   var _phoneNumber = 0;
   bool load = false;
+
+  String deviceId = "";
+
+  Future<void> initPlatform() async {
+    await OneSignal.shared.getDeviceState().then((value) => {
+          print("id: " + value!.userId!),
+          deviceId = value.userId!,
+        });
+  }
+
+  @override
+  void initState() {
+    initPlatform();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final arguments = (ModalRoute.of(context)?.settings.arguments ??
@@ -83,6 +99,7 @@ class _SignUpState extends State<SignUp> {
                       height: SizeConfig.safeBlockVertical * 4,
                     ),
                     CustomTextFormField(
+                      textInputAction: TextInputAction.next,
                       textColor: Colors.white,
                       hintText: "First Name",
                       iconData: Icons.person,
@@ -108,6 +125,7 @@ class _SignUpState extends State<SignUp> {
                       height: SizeConfig.safeBlockVertical * 4,
                     ),
                     CustomTextFormField(
+                      textInputAction: TextInputAction.next,
                       textColor: Colors.white,
                       hintText: "Last Name",
                       iconData: Icons.person,
@@ -133,6 +151,7 @@ class _SignUpState extends State<SignUp> {
                       height: SizeConfig.safeBlockVertical * 4,
                     ),
                     CustomTextFormField(
+                      textInputAction: TextInputAction.next,
                       textColor: Colors.white,
                       hintText: "Email",
                       textInputType: TextInputType.emailAddress,
@@ -164,6 +183,7 @@ class _SignUpState extends State<SignUp> {
                         ? Column(
                             children: [
                               CustomTextFormField(
+                                textInputAction: TextInputAction.next,
                                 textColor: Colors.white,
                                 hintText: "Project Id",
                                 iconData: Icons.rocket,
@@ -193,6 +213,7 @@ class _SignUpState extends State<SignUp> {
                         : Container(),
                     CustomTextFormField(
                       textColor: Colors.white,
+                      textInputAction: TextInputAction.next,
                       hintText: "Phone Number",
                       textInputType: TextInputType.number,
                       iconData: Icons.phone,
@@ -245,51 +266,58 @@ class _SignUpState extends State<SignUp> {
                     ),
                     GradiantCustomButton(
                       disabled: context.watch<UsersViewModel>().Loading,
-                      onPressed: () async {
-                        if (_formKey.currentState!.validate()) {
-                          FocusManager.instance.primaryFocus?.unfocus();
-                          _formKey.currentState!.save();
-                          await context.read<UsersViewModel>().Register(
-                              _email,
-                              _password,
-                              _firstName,
-                              _lastName,
-                              _projectId,
-                              arguments['role'],
-                              _phoneNumber);
-                          var response =
-                              context.read<UsersViewModel>().loggedin;
-                          log("res" + response.toString());
-                          if (response == "Success") {
-                            Navigator.of(context)
-                                .popUntil((route) => route.isFirst);
-                            Navigator.of(context)
-                                .pushReplacementNamed(NavigationBottom.id);
-                            log("respong " + "aaaaaaaaaaaaaaa");
-                          } else if (response == "Email already exists") {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Email already exists'),
-                              ),
-                            );
-                          } else if (response == "ProjectId Doesn't exist") {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('ProjectId Doesn\'t exist'),
-                              ),
-                            );
-                          } else {
-                            log("failed");
-                            context.read<UsersViewModel>().setLoading(false);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                    'Something went wrong, check internet connection'),
-                              ),
-                            );
-                          }
-                        }
-                      },
+                      onPressed: !context.watch<UsersViewModel>().Loading
+                          ? () async {
+                              if (_formKey.currentState!.validate()) {
+                                FocusManager.instance.primaryFocus?.unfocus();
+                                _formKey.currentState!.save();
+                                await context.read<UsersViewModel>().Register(
+                                      _email,
+                                      _password,
+                                      _firstName,
+                                      _lastName,
+                                      _projectId,
+                                      arguments['role'],
+                                      _phoneNumber,
+                                      deviceId,
+                                    );
+                                var response =
+                                    context.read<UsersViewModel>().loggedin;
+                                log("res" + response.toString());
+                                if (response == "Success") {
+                                  Navigator.of(context)
+                                      .popUntil((route) => route.isFirst);
+                                  Navigator.of(context).pushReplacementNamed(
+                                      NavigationBottom.id);
+                                  log("respong " + "aaaaaaaaaaaaaaa");
+                                } else if (response == "Email already exists") {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Email already exists'),
+                                    ),
+                                  );
+                                } else if (response ==
+                                    "ProjectId Doesn't exist") {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('ProjectId Doesn\'t exist'),
+                                    ),
+                                  );
+                                } else {
+                                  log("failed");
+                                  context
+                                      .read<UsersViewModel>()
+                                      .setLoading(false);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          'Something went wrong, check internet connection'),
+                                    ),
+                                  );
+                                }
+                              }
+                            }
+                          : () {},
                       height: SizeConfig.safeBlockVertical * 8,
                       width: SizeConfig.safeBlockHorizontal * 80,
                       borderRadius: BorderRadius.circular(20),

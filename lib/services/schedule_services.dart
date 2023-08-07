@@ -36,12 +36,16 @@ class ScheduleServices {
   }
 
   static Future<Map<String, dynamic>?> getSchedule(String endpoint) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, String> requestHeaders = {
       HttpHeaders.contentTypeHeader: " application/json",
+      // 'Authorization': prefs.getString("token").toString(),
     };
-    Uri uri = Uri.http(endpoint, GETSCHEDULE);
+    Uri uri = Uri.http(endpoint, GETALLGENERALPLANNING);
     try {
-      var response = await http.get(uri, headers: requestHeaders);
+      var response = await http
+          .get(uri, headers: requestHeaders)
+          .timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
         Map<String, dynamic> scheduleFromServer = json.decode(response.body);

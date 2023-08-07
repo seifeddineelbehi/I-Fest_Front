@@ -6,9 +6,9 @@ import 'package:flutter_template/views/components/custom_button.dart';
 import 'package:flutter_template/views/components/custom_text_form_field.dart';
 import 'package:flutter_template/views/components/gradiant_custom_button.dart';
 import 'package:flutter_template/views/pages/Authentication/sign_up_view.dart';
-import 'package:flutter_template/views/pages/home_view.dart';
 import 'package:flutter_template/views/views.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
 import 'dart:developer';
 
@@ -28,6 +28,20 @@ class _LoginViewState extends State<LoginView> {
   var _password = "";
   var _email = "";
   bool load = false;
+  String deviceId = "";
+
+  Future<void> initPlatform() async {
+    await OneSignal.shared.getDeviceState().then((value) => {
+          print("id: " + value!.userId!),
+          deviceId = value.userId!,
+        });
+  }
+
+  @override
+  void initState() {
+    initPlatform();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,6 +99,7 @@ class _LoginViewState extends State<LoginView> {
                     CustomTextFormField(
                       textColor: Colors.white,
                       hintText: "Email",
+                      textInputAction: TextInputAction.next,
                       textInputType: TextInputType.emailAddress,
                       iconData: Icons.mail,
                       underLineColor: Palette.textSecondaryColor,
@@ -138,56 +153,67 @@ class _LoginViewState extends State<LoginView> {
                     ),
                     GradiantCustomButton(
                       disabled: context.watch<UsersViewModel>().Loading,
-                      onPressed: () async {
-                        FocusManager.instance.primaryFocus?.unfocus();
-                        if (_formKey.currentState!.validate()) {
-                          _formKey.currentState!.save();
-                          SharedPreferences prefs =
-                              await SharedPreferences.getInstance();
-                          await context
-                              .read<UsersViewModel>()
-                              .Login(_email, _password);
-                          var response =
-                              context.read<UsersViewModel>().loggedin;
-                          log("res" + response.toString());
-                          if (response == "Success") {
-                            if (prefs.getString("role") == "admin") {
-                              Navigator.of(context)
-                                  .popUntil((route) => route.isFirst);
-                              Navigator.of(context)
-                                  .pushReplacementNamed(AdminHomeView.id);
-                            } else {
-                              Navigator.of(context)
-                                  .popUntil((route) => route.isFirst);
-                              Navigator.of(context)
-                                  .pushReplacementNamed(NavigationBottom.id);
-                            }
+                      onPressed: !context.watch<UsersViewModel>().Loading
+                          ? () async {
+                              FocusManager.instance.primaryFocus?.unfocus();
+                              if (_formKey.currentState!.validate()) {
+                                _formKey.currentState!.save();
+                                SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+                                await context
+                                    .read<UsersViewModel>()
+                                    .Login(_email, _password, deviceId);
+                                var response =
+                                    context.read<UsersViewModel>().loggedin;
+                                log("res" + response.toString());
+                                if (response == "Success") {
+                                  if (prefs.getString("role") == "admin") {
+                                    Navigator.of(context)
+                                        .popUntil((route) => route.isFirst);
+                                    Navigator.of(context)
+                                        .pushReplacementNamed(AdminHomeView.id);
+                                  } else {
+                                    context.read<UsersViewModel>().setName(
+                                        prefs.getString("firstName")! +
+                                            " " +
+                                            prefs.getString("lastName")!);
+                                    context
+                                        .read<UsersViewModel>()
+                                        .setEmail(prefs.getString("email")!);
+                                    Navigator.of(context)
+                                        .popUntil((route) => route.isFirst);
+                                    Navigator.of(context).pushReplacementNamed(
+                                        NavigationBottom.id);
+                                  }
 
-                            log("respong " + "aaaaaaaaaaaaaaa");
-                          } else if (response == "Password wrong") {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Password is Wrong'),
-                              ),
-                            );
-                          } else if (response == "Email doesn't exist") {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Email doesn\'t exist'),
-                              ),
-                            );
-                          } else {
-                            log("failed");
-                            context.read<UsersViewModel>().setLoading(false);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                    'Something went wrong, check internet connection'),
-                              ),
-                            );
-                          }
-                        }
-                      },
+                                  log("respong " + "aaaaaaaaaaaaaaa");
+                                } else if (response == "Password wrong") {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Password is Wrong'),
+                                    ),
+                                  );
+                                } else if (response == "Email doesn't exist") {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Email doesn\'t exist'),
+                                    ),
+                                  );
+                                } else {
+                                  log("failed");
+                                  context
+                                      .read<UsersViewModel>()
+                                      .setLoading(false);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          'Something went wrong, check internet connection'),
+                                    ),
+                                  );
+                                }
+                              }
+                            }
+                          : () {},
                       height: SizeConfig.safeBlockVertical * 8,
                       width: SizeConfig.safeBlockHorizontal * 80,
                       borderRadius: BorderRadius.circular(20),

@@ -5,18 +5,32 @@ import 'package:flutter_template/utils/apis.dart';
 import 'dart:developer';
 
 abstract class UsersRepository {
-  Login(String email, String password);
+  Login(String email, String password, String deviceId);
+
+  Notif(String notif);
+
   Register(String email, String password, String firstName, String lastName,
-      String projectId, String role, int phoneNumber);
+      String projectId, String role, int phoneNumber, String deviceId);
 }
 
 class UsersViewModel with ChangeNotifier implements UsersRepository {
   UserModel? _user;
   String? _loggedIn;
+  String? _name;
+  String? _email;
   bool? _loading = false;
+
   setLoggedIn(String loggedin) {
     _loggedIn = loggedin;
     notifyListeners();
+  }
+
+  String? get name {
+    return _name;
+  }
+
+  String? get email {
+    return _email;
   }
 
   String? get loggedin {
@@ -32,25 +46,28 @@ class UsersViewModel with ChangeNotifier implements UsersRepository {
     notifyListeners();
   }
 
+  setName(String name) {
+    _name = name;
+    notifyListeners();
+  }
+
+  setEmail(String email) {
+    _email = email;
+    notifyListeners();
+  }
+
   @override
-  Login(String email, String password) async {
+  Login(String email, String password, String deviceId) async {
     setLoading(true);
-    var user = await UserServices.login(localURL, email, password);
+    var user = await UserServices.login(localURL, email, password, deviceId);
     log("////// " + user.toString());
     setLoggedIn(user.toString());
     setLoading(false);
   }
 
   @override
-  Register(
-    String email,
-    String password,
-    String firstName,
-    String lastName,
-    String projectId,
-    String role,
-    int phoneNumber,
-  ) async {
+  Register(String email, String password, String firstName, String lastName,
+      String projectId, String role, int phoneNumber, String deviceId) async {
     setLoading(true);
     var user = await UserServices.signUp(
         endpoint: localURL,
@@ -60,9 +77,17 @@ class UsersViewModel with ChangeNotifier implements UsersRepository {
         lastName: lastName,
         projectId: projectId,
         role: role,
-        phoneNumber: phoneNumber);
+        phoneNumber: phoneNumber,
+        deviceId: deviceId);
     log("////// " + user.toString());
     setLoggedIn(user.toString());
+    setLoading(false);
+  }
+
+  @override
+  Notif(String notif) async {
+    setLoading(true);
+    var user = await UserServices.notification(localURL, notif);
     setLoading(false);
   }
 }

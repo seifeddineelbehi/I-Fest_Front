@@ -19,6 +19,7 @@ class AdminHomeView extends StatefulWidget {
 
 class _AdminHomeViewState extends State<AdminHomeView> {
   late SharedPreferences prefs;
+
   Future<void> initializePreference() async {
     this.prefs = await SharedPreferences.getInstance();
   }
@@ -32,12 +33,9 @@ class _AdminHomeViewState extends State<AdminHomeView> {
 
   final _formKeyHotel = GlobalKey<FormState>();
   final _formKeyVenue = GlobalKey<FormState>();
-  var _currentHotel = "";
-  var _nextHotel = "";
-  var _nextHotelTime = "";
-  var _currentVenue = "";
-  var _nextVenu = "";
-  var _nextVenuTime = "";
+  var _notif = "";
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -45,7 +43,7 @@ class _AdminHomeViewState extends State<AdminHomeView> {
       backgroundColor: Palette.PageMainColor,
       appBar: AppBar(
         title: Text(
-          "Add Schedule",
+          "Send Notification",
           style: GoogleFonts.poppins(
             color: const Color(0xFFFFFFFF),
             fontWeight: FontWeight.w700,
@@ -152,323 +150,86 @@ class _AdminHomeViewState extends State<AdminHomeView> {
               SizedBox(
                 height: SizeConfig.safeBlockVertical * 2,
               ),
-              Form(
-                key: _formKeyHotel,
-                child: AddCard(
-                  info: Column(
-                    children: [
-                      Text(
-                        "Hotel",
-                        style: GoogleFonts.poppins(
-                          color: const Color(0xFFFFFFFF),
-                          fontWeight: FontWeight.w700,
-                          fontSize: SizeConfig.kDefaultSize * 6,
-                        ),
-                      ),
-                      SizedBox(
-                        height: SizeConfig.safeBlockVertical * 2,
-                      ),
-                      CustomTextFormField(
-                        text: "Current Activity",
-                        textColor: Colors.white,
-                        hintText: "Current Activity",
-                        iconData: Icons.mail,
-                        underLineColor: Palette.textSecondaryColor,
-                        iconColor: Palette.textSecondaryColor,
-                        withText: false,
-                        onSaved: (String? value) {
-                          setState(() {
-                            _currentHotel = value.toString();
-                          });
-                        },
-                        onValidate: (String? value) {
-                          if (value == null || value.isEmpty) {
-                            return "Current Activity shouldn't be empty";
-                          } else if (value.length < 3) {
-                            return "Current Activity must contain at least 3 characters";
-                          } else {
-                            return null;
-                          }
-                        },
-                      ),
-                      SizedBox(
-                        height: SizeConfig.safeBlockVertical * 2,
-                      ),
-                      CustomTextFormField(
-                        text: "Next Activity",
-                        textColor: Colors.white,
-                        hintText: "Next Activity",
-                        iconData: Icons.mail,
-                        underLineColor: Palette.textSecondaryColor,
-                        iconColor: Palette.textSecondaryColor,
-                        withText: false,
-                        onSaved: (String? value) {
-                          setState(() {
-                            _nextHotel = value.toString();
-                          });
-                        },
-                        onValidate: (String? value) {
-                          if (value == null || value.isEmpty) {
-                            return "Next Activity shouldn't be empty";
-                          } else if (value.length < 3) {
-                            return "Next Activity must contain at least 3 characters";
-                          } else {
-                            return null;
-                          }
-                        },
-                      ),
-                      SizedBox(
-                        height: SizeConfig.safeBlockVertical * 2,
-                      ),
-                      CustomTextFormField(
-                        text: "Next Activity Time",
-                        textColor: Colors.white,
-                        hintText: "Next Activity Time",
-                        iconData: Icons.mail,
-                        underLineColor: Palette.textSecondaryColor,
-                        iconColor: Palette.textSecondaryColor,
-                        withText: false,
-                        onSaved: (String? value) {
-                          setState(() {
-                            _nextHotelTime = value.toString();
-                          });
-                        },
-                        onValidate: (String? value) {
-                          if (value == null || value.isEmpty) {
-                            return "Next Activity Time shouldn't be empty";
-                          } else if (value.length < 3) {
-                            return "Next Activity Time must contain at least 3 characters";
-                          } else {
-                            return null;
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: SizeConfig.safeBlockVertical * 3,
-              ),
-              GradiantCustomButton(
-                disabled: context.watch<ScheduleViewModel>().Loading,
-                onPressed: () async {
-                  FocusManager.instance.primaryFocus?.unfocus();
-                  if (_formKeyHotel.currentState!.validate()) {
-                    _formKeyHotel.currentState!.save();
-                    await context.read<ScheduleViewModel>().PostSchedule(
-                        _currentHotel, _nextHotel, "hotel", _nextHotelTime);
-                    var response = context.read<ScheduleViewModel>().ScheduleIn;
-                    if (response == "Success") {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content:
-                              Text('Hotel Schedule is Successfully updated'),
-                        ),
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                              'Something went wrong, check internet connection'),
-                        ),
-                      );
-                    }
-                  }
-                },
-                height: SizeConfig.safeBlockVertical * 8,
-                width: SizeConfig.safeBlockHorizontal * 70,
-                borderRadius: BorderRadius.circular(20),
-                gradient: const LinearGradient(
-                  colors: [
-                    Color(0xff4047bd),
-                    Color(0xff993776),
-                    Color(0xfff2282f),
-                  ],
-                ),
-                child: !context.watch<UsersViewModel>().Loading
-                    ? Text(
-                        "Register Hotel Schedule",
-                        style: GoogleFonts.poppins(
-                          color: const Color(0xFFFFFFFF),
-                          fontWeight: FontWeight.w700,
-                          fontSize: SizeConfig.kDefaultSize * 5,
-                        ),
-                      )
-                    : CircularProgressIndicator(),
-              ),
               SizedBox(
                 height: SizeConfig.safeBlockVertical * 3,
               ),
               Form(
-                key: _formKeyVenue,
-                child: AddCard(
-                  info: Column(
+                key: _formKey,
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        "Venue",
-                        style: GoogleFonts.poppins(
-                          color: const Color(0xFFFFFFFF),
-                          fontWeight: FontWeight.w700,
-                          fontSize: SizeConfig.kDefaultSize * 6,
+                      CustomTextFormField(
+                        textColor: Colors.white,
+                        hintText: "Notification",
+                        textInputAction: TextInputAction.next,
+                        textInputType: TextInputType.emailAddress,
+                        iconData: Icons.mail,
+                        underLineColor: Palette.textSecondaryColor,
+                        iconColor: Palette.textSecondaryColor,
+                        withText: false,
+                        onSaved: (String? value) {
+                          setState(() {
+                            _notif = value.toString();
+                          });
+                        },
+                        onValidate: (String? value) {
+                          if (value == null || value.isEmpty) {
+                            return "Email shouldn't be empty";
+                          } else {
+                            return null;
+                          }
+                        },
+                      ),
+                      SizedBox(
+                        height: SizeConfig.safeBlockVertical * 4,
+                      ),
+                      GradiantCustomButton(
+                        disabled: context.watch<UsersViewModel>().Loading,
+                        onPressed: !context.watch<UsersViewModel>().Loading
+                            ? () async {
+                                FocusManager.instance.primaryFocus?.unfocus();
+                                if (_formKey.currentState!.validate()) {
+                                  _formKey.currentState!.save();
+                                  SharedPreferences prefs =
+                                      await SharedPreferences.getInstance();
+                                  await context
+                                      .read<UsersViewModel>()
+                                      .Notif(_notif);
+                                }
+                              }
+                            : () {},
+                        height: SizeConfig.safeBlockVertical * 8,
+                        width: SizeConfig.safeBlockHorizontal * 80,
+                        borderRadius: BorderRadius.circular(20),
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xff4047bd),
+                            Color(0xff993776),
+                            Color(0xfff2282f),
+                          ],
                         ),
+                        child: !context.watch<UsersViewModel>().Loading
+                            ? Text(
+                                "Send",
+                                style: GoogleFonts.poppins(
+                                  color: const Color(0xFFFFFFFF),
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: SizeConfig.kDefaultSize * 5,
+                                ),
+                              )
+                            : CircularProgressIndicator(),
                       ),
                       SizedBox(
-                        height: SizeConfig.safeBlockVertical * 2,
-                      ),
-                      CustomTextFormField(
-                        text: "Current Activity",
-                        textColor: Colors.white,
-                        hintText: "Current Activity",
-                        iconData: Icons.mail,
-                        underLineColor: Palette.textSecondaryColor,
-                        iconColor: Palette.textSecondaryColor,
-                        withText: false,
-                        onSaved: (String? value) {
-                          setState(() {
-                            _currentVenue = value.toString();
-                          });
-                        },
-                        onValidate: (String? value) {
-                          if (value == null || value.isEmpty) {
-                            return "Current Activity shouldn't be empty";
-                          } else if (value.length < 3) {
-                            return "Current Activity must contain at least 3 characters";
-                          } else {
-                            return null;
-                          }
-                        },
-                      ),
-                      SizedBox(
-                        height: SizeConfig.safeBlockVertical * 2,
-                      ),
-                      CustomTextFormField(
-                        text: "Next Activity",
-                        textColor: Colors.white,
-                        hintText: "Next Activity",
-                        iconData: Icons.mail,
-                        underLineColor: Palette.textSecondaryColor,
-                        iconColor: Palette.textSecondaryColor,
-                        withText: false,
-                        onSaved: (String? value) {
-                          setState(() {
-                            _nextVenu = value.toString();
-                          });
-                        },
-                        onValidate: (String? value) {
-                          if (value == null || value.isEmpty) {
-                            return "Next Activity shouldn't be empty";
-                          } else if (value.length < 3) {
-                            return "Next Activity must contain at least 3 characters";
-                          } else {
-                            return null;
-                          }
-                        },
-                      ),
-                      SizedBox(
-                        height: SizeConfig.safeBlockVertical * 2,
-                      ),
-                      CustomTextFormField(
-                        text: "Next Activity Time",
-                        textColor: Colors.white,
-                        hintText: "Next Activity Time",
-                        iconData: Icons.mail,
-                        underLineColor: Palette.textSecondaryColor,
-                        iconColor: Palette.textSecondaryColor,
-                        withText: false,
-                        onSaved: (String? value) {
-                          setState(() {
-                            _nextVenuTime = value.toString();
-                          });
-                        },
-                        onValidate: (String? value) {
-                          if (value == null || value.isEmpty) {
-                            return "Next Activity Time shouldn't be empty";
-                          } else if (value.length < 3) {
-                            return "Next Activity Time must contain at least 3 characters";
-                          } else {
-                            return null;
-                          }
-                        },
+                        height: SizeConfig.safeBlockVertical * 6,
                       ),
                     ],
                   ),
                 ),
-              ),
-              SizedBox(
-                height: SizeConfig.safeBlockVertical * 3,
-              ),
-              GradiantCustomButton(
-                disabled: context.watch<ScheduleViewModel>().Loading,
-                onPressed: () async {
-                  FocusManager.instance.primaryFocus?.unfocus();
-                  if (_formKeyVenue.currentState!.validate()) {
-                    _formKeyVenue.currentState!.save();
-                    await context.read<ScheduleViewModel>().PostSchedule(
-                        _currentVenue, _nextVenu, "venue", _nextVenuTime);
-                    var response = context.read<ScheduleViewModel>().ScheduleIn;
-                    if (response == "Success") {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content:
-                              Text('Venue Schedule is Successfully updated'),
-                        ),
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                              'Something went wrong, check internet connection'),
-                        ),
-                      );
-                    }
-                  }
-                },
-                height: SizeConfig.safeBlockVertical * 8,
-                width: SizeConfig.safeBlockHorizontal * 70,
-                borderRadius: BorderRadius.circular(20),
-                gradient: const LinearGradient(
-                  colors: [
-                    Color(0xff4047bd),
-                    Color(0xff993776),
-                    Color(0xfff2282f),
-                  ],
-                ),
-                child: !context.watch<UsersViewModel>().Loading
-                    ? Text(
-                        "Register Venue Schedule",
-                        style: GoogleFonts.poppins(
-                          color: const Color(0xFFFFFFFF),
-                          fontWeight: FontWeight.w700,
-                          fontSize: SizeConfig.kDefaultSize * 5,
-                        ),
-                      )
-                    : CircularProgressIndicator(),
-              ),
-              SizedBox(
-                height: SizeConfig.safeBlockVertical * 3,
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Container AddCard({required Column info}) {
-    return Container(
-      height: SizeConfig.safeBlockVertical * 50,
-      width: SizeConfig.safeBlockHorizontal * 90,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        color: Palette.mainWidgetColor,
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(SizeConfig.kDefaultSize * 5),
-        child: Column(
-          children: [
-            info,
-          ],
         ),
       ),
     );

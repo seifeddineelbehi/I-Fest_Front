@@ -1,9 +1,10 @@
 export 'pages/home_test_view.dart';
 export 'pages/splash_screen_view.dart';
 export 'pages/landing_page_view.dart';
-export 'pages/home_view.dart';
+export 'pages/home/home_view.dart';
+export 'pages/Ifest/ifest_view.dart';
 export 'pages/nav_bottom.dart';
-export 'pages/profile_view.dart';
+export 'pages/profile/profile_view.dart';
 export 'pages/help_view.dart';
 export 'pages/help_email_view.dart';
 export 'pages/Admin/admin_home_view.dart';

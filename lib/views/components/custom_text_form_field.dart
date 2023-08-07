@@ -10,11 +10,13 @@ class CustomTextFormField extends StatelessWidget {
   final Color? iconColor;
   final Color underLineColor;
   final Color textColor;
+  final TextInputAction? textInputAction;
   final Function(String?)? onSaved;
   final String? Function(String?)? onValidate;
   final bool obscureText;
   final TextInputType? textInputType;
   final bool withText;
+
   const CustomTextFormField({
     Key? key,
     this.text = "",
@@ -25,6 +27,7 @@ class CustomTextFormField extends StatelessWidget {
     required this.underLineColor,
     required this.textColor,
     required this.onValidate,
+    this.textInputAction = TextInputAction.done,
     this.textInputType = TextInputType.text,
     this.obscureText = false,
     this.withText = true,
@@ -45,6 +48,7 @@ class CustomTextFormField extends StatelessWidget {
               )
             : Container(),
         TextFormField(
+          textInputAction: textInputAction,
           style: TextStyle(color: textColor),
           obscureText: obscureText,
           decoration: InputDecoration(
