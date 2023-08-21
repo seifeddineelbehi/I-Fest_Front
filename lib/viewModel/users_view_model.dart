@@ -5,12 +5,32 @@ import 'package:flutter_template/utils/apis.dart';
 import 'dart:developer';
 
 abstract class UsersRepository {
-  Login(String email, String password, String deviceId);
+  Login(
+    String email,
+    String password,
+    String deviceId,
+  );
 
   Notif(String notif);
 
-  Register(String email, String password, String firstName, String lastName,
-      String projectId, String role, int phoneNumber, String deviceId);
+  Register(
+    String email,
+    String password,
+    String firstName,
+    String lastName,
+    String projectId,
+    String role,
+    int phoneNumber,
+    String deviceId,
+  );
+
+  UpdateProfile(
+    String email,
+    String password,
+    String firstName,
+    String lastName,
+    int phoneNumber,
+  );
 }
 
 class UsersViewModel with ChangeNotifier implements UsersRepository {
@@ -79,6 +99,28 @@ class UsersViewModel with ChangeNotifier implements UsersRepository {
         role: role,
         phoneNumber: phoneNumber,
         deviceId: deviceId);
+    log("////// " + user.toString());
+    setLoggedIn(user.toString());
+    setLoading(false);
+  }
+
+  @override
+  UpdateProfile(
+    String email,
+    String password,
+    String firstName,
+    String lastName,
+    int phoneNumber,
+  ) async {
+    setLoading(true);
+    var user = await UserServices.updateProfile(
+      endpoint: localURL,
+      email: email,
+      password: password,
+      firstName: firstName,
+      lastName: lastName,
+      phoneNumber: phoneNumber,
+    );
     log("////// " + user.toString());
     setLoggedIn(user.toString());
     setLoading(false);

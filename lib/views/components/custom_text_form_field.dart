@@ -5,6 +5,7 @@ import 'package:flutter_template/utils/size_config.dart';
 
 class CustomTextFormField extends StatelessWidget {
   final String text;
+  final String initialValue;
   final String hintText;
   final IconData iconData;
   final Color? iconColor;
@@ -20,6 +21,7 @@ class CustomTextFormField extends StatelessWidget {
   const CustomTextFormField({
     Key? key,
     this.text = "",
+    this.initialValue = "",
     required this.hintText,
     required this.iconData,
     required this.iconColor,
@@ -48,6 +50,7 @@ class CustomTextFormField extends StatelessWidget {
               )
             : Container(),
         TextFormField(
+          initialValue: initialValue,
           textInputAction: textInputAction,
           style: TextStyle(color: textColor),
           obscureText: obscureText,

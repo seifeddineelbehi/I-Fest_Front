@@ -9,6 +9,9 @@ import 'package:flutter_template/utils/utils.dart';
 import 'package:flutter_template/views/pages/meal_detail/widgets/top_bar_widget.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../../viewModel/events_view_model.dart';
 
 class EventsDetails extends StatefulWidget {
   final EventsModel event;
@@ -24,7 +27,7 @@ class EventsDetails extends StatefulWidget {
 
 class _EventsDetailsState extends State<EventsDetails> {
   var quantety = 1;
-
+  String _userId = "";
   void getQuantety(int qt) {
     setState(() {
       quantety = qt;
@@ -32,11 +35,23 @@ class _EventsDetailsState extends State<EventsDetails> {
   }
 
   @override
+  void initState() {
+    SharedPreferences.getInstance().then((value) {
+      if (value.containsKey("userId")) {
+        setState(() {
+          _userId = value.getString("userId")!;
+        });
+      }
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ListView(
       physics: const BouncingScrollPhysics(),
       children: [
-        topBarWidget(context, widget.event),
+        topBarWidget(context, widget.event, _userId),
         Container(
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 25),
           decoration: const BoxDecoration(

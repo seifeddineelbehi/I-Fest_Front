@@ -172,4 +172,61 @@ class UserServices {
       // }
     } catch (exception) {}
   }
+
+  static Future<String?> updateProfile({
+    required String endpoint,
+    required String email,
+    required String password,
+    required String firstName,
+    required String lastName,
+    required int phoneNumber,
+  }) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map<String, String> requestHeaders = {
+      HttpHeaders.contentTypeHeader: " application/json",
+      'Authorization': prefs.getString("token").toString(),
+    };
+    Uri uri = Uri.http(endpoint, UPDATEPROFILE);
+    var body;
+
+    body = {
+      "email": email,
+      "password": password,
+      "firstName": firstName,
+      "lastName": lastName,
+      "phoneNumber": phoneNumber,
+    };
+
+    try {
+      var response = await http
+          .post(uri, headers: requestHeaders, body: jsonEncode(body))
+          .timeout(const Duration(seconds: 10));
+      print("aaaaaaaaaaaaaaaaaaaaa");
+      if (response.statusCode == 200) {
+        Map<String, dynamic> userFromServer = json.decode(response.body);
+        log("api" + userFromServer["_id"].toString());
+
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString("userId", userFromServer["_id"]);
+
+        prefs.setString("email", userFromServer["email"]);
+        prefs.setString("firstName", userFromServer["firstName"]);
+        prefs.setString("lastName", userFromServer["lastName"]);
+        prefs.setString("role", userFromServer["role"]);
+        prefs.setInt("phoneNumber", userFromServer["phoneNumber"]);
+        if (userFromServer["role"] == "participant") {
+          prefs.setString("projectId", userFromServer["projectId"]);
+        }
+        print("aaaaaaaaaaaaaaaaaaaa");
+        return "Success";
+      } else if (response.statusCode == 402) {
+        return "Email already exists";
+      } else if (response.statusCode == 401) {
+        return "ProjectId Doesn't exist";
+      } else {
+        return "Failure";
+      }
+      // }
+    } catch (exception) {}
+  }
 }

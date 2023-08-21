@@ -9,6 +9,7 @@ import 'package:flutter_template/viewModel/schedule_view_model.dart';
 import 'package:flutter_template/viewModel/send_mail_view_model.dart';
 import 'package:flutter_template/viewModel/users_view_model.dart';
 import 'package:flutter_template/views/pages/nav_bottom_guest.dart';
+import 'package:flutter_template/views/pages/profile/edit_profile_view.dart';
 import 'package:flutter_template/views/views.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
@@ -75,6 +76,7 @@ class MyApp extends StatelessWidget {
             IfestView.id: (context) => const IfestView(),
             HelpView.id: (context) => const HelpView(),
             HelpEmailView.id: (context) => const HelpEmailView(),
+            EditProfile.id: (context) => const EditProfile(),
             AdminHomeView.id: (context) => const AdminHomeView(),
           },
         ),

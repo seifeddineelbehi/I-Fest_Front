@@ -30,4 +30,50 @@ class EventsServices {
       // }
     } catch (exception) {}
   }
+
+  static Future<Map<String, dynamic>?> likeEvent(
+      String endpoint, String idEvent) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map<String, String> requestHeaders = {
+      HttpHeaders.contentTypeHeader: " application/json",
+      'Authorization': prefs.getString("token").toString(),
+    };
+
+    Uri uri = Uri.http(endpoint, LIKEEVENT + idEvent);
+    try {
+      var response = await http
+          .put(uri, headers: requestHeaders)
+          .timeout(const Duration(seconds: 10));
+      if (response.statusCode == 200) {
+        Map<String, dynamic> eventsFromServer = json.decode(response.body);
+        return eventsFromServer;
+      } else {
+        return null;
+      }
+      // }
+    } catch (exception) {}
+  }
+
+  static Future<Map<String, dynamic>?> unlikLikeEvent(
+      String endpoint, String idEvent) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map<String, String> requestHeaders = {
+      HttpHeaders.contentTypeHeader: " application/json",
+      'Authorization': prefs.getString("token").toString(),
+    };
+
+    Uri uri = Uri.http(endpoint, UNLIKEEVENT + idEvent);
+    try {
+      var response = await http
+          .put(uri, headers: requestHeaders)
+          .timeout(const Duration(seconds: 10));
+      if (response.statusCode == 200) {
+        Map<String, dynamic> eventsFromServer = json.decode(response.body);
+        return eventsFromServer;
+      } else {
+        return null;
+      }
+      // }
+    } catch (exception) {}
+  }
 }

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_template/utils/utils.dart';
 import 'package:flutter_template/viewModel/users_view_model.dart';
-import 'package:flutter_template/views/components/custom_text_icon_button.dart';
 import 'package:flutter_template/views/components/profile_custom_button.dart';
-import 'package:flutter_template/views/pages/help_view.dart';
 import 'package:flutter_template/views/pages/landing_page_view.dart';
 import 'package:flutter_template/views/pages/profile/about.dart';
+import 'package:flutter_template/views/pages/profile/edit_profile_view.dart';
 import 'package:flutter_template/views/views.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -62,7 +61,7 @@ class _ProfileViewState extends State<ProfileView> {
                 height: SizeConfig.safeBlockVertical * 2,
               ),
               Text(
-                context.read<UsersViewModel>().name!,
+                context.watch<UsersViewModel>().name!,
                 style: GoogleFonts.poppins(
                   color: const Color(0xFFFFFFFF),
                   fontWeight: FontWeight.w700,
@@ -79,6 +78,17 @@ class _ProfileViewState extends State<ProfileView> {
               ),
               SizedBox(
                 height: SizeConfig.safeBlockVertical * 5,
+              ),
+              ProfileCustomButton(
+                text: "Edit profile",
+                Icon: "assets/svgs/edit-profile.svg",
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const EditProfile()),
+                  );
+                },
               ),
               ProfileCustomButton(
                 text: "About Us",

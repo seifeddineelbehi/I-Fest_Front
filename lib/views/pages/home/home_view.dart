@@ -52,6 +52,8 @@ class _HomeViewState extends State<HomeView> {
       eventStartTime: "8:00",
       eventEndTime: "eventEndTime",
       eventAbout: "eventAbout",
+      likes: [],
+      unlikes: [],
       planing: [],
       image:
           "https://firebasestorage.googleapis.com/v0/b/ifest-38db9.appspot.com/o/IFEST_logo.png?alt=media&token=7fed89bd-ebc5-4166-8d60-06b237f22483",

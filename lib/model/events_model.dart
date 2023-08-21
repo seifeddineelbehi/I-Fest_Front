@@ -19,6 +19,8 @@ class EventsModel {
     required this.eventAbout,
     required this.planing,
     required this.image,
+    required this.likes,
+    required this.unlikes,
     required this.createdAt,
     required this.updatedAt,
     required this.v,
@@ -36,6 +38,8 @@ class EventsModel {
   String image;
   DateTime createdAt;
   DateTime updatedAt;
+  List<String> likes;
+  List<String> unlikes;
   int v;
 
   factory EventsModel.fromJson(Map<String, dynamic> json) => EventsModel(
@@ -49,6 +53,12 @@ class EventsModel {
         eventAbout: json["eventAbout"],
         planing: List<PlaningModel>.from(
             json["planing"].map((x) => PlaningModel.fromJson(x))),
+        likes: List<String>.from(json["likes"].map((x) => x)),
+        unlikes: List<String>.from(json["unlikes"].map((x) => x)),
+        /*likes: List<UserModel>.from(
+            json["likes"].map((x) => UserModel.fromJson(x))),
+        unlikes: List<UserModel>.from(
+            json["unlikes"].map((x) => UserModel.fromJson(x))),*/
         image: json["image"],
         createdAt: DateTime.parse(json["createdAt"]),
         updatedAt: DateTime.parse(json["updatedAt"]),
