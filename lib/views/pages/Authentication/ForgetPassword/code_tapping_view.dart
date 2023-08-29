@@ -79,12 +79,13 @@ class _CodeTappingViewState extends State<CodeTappingView> {
                     ),
                   ),
                   SizedBox(
-                    height: SizeConfig.safeBlockVertical * 4,
+                    height: SizeConfig.safeBlockVertical * 7,
                   ),
                   OtpTextField(
                     numberOfFields: 5,
                     borderColor: kSecondaryColor,
-                    fillColor: Colors.grey,
+                    fillColor: Colors.white,
+                    textStyle: TextStyle(color: Colors.white),
                     //set to true to show as box or false to show as dash
                     showFieldAsBox: true,
                     //runs when a code is typed in
@@ -111,6 +112,9 @@ class _CodeTappingViewState extends State<CodeTappingView> {
                                 content: Text(' Wrong Verification code'),
                               );
                             });
+                        setState(() {
+                          verificationCode = "";
+                        });
                       }
                     }, // end onSubmit
                   ),
