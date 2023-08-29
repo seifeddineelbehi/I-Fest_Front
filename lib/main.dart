@@ -8,12 +8,15 @@ import 'package:flutter_template/viewModel/home_test_view_model.dart';
 import 'package:flutter_template/viewModel/schedule_view_model.dart';
 import 'package:flutter_template/viewModel/send_mail_view_model.dart';
 import 'package:flutter_template/viewModel/users_view_model.dart';
+import 'package:flutter_template/views/pages/Authentication/ForgetPassword/code_tapping_view.dart';
+import 'package:flutter_template/views/pages/Authentication/ForgetPassword/forget_password_view.dart';
+import 'package:flutter_template/views/pages/Authentication/ForgetPassword/reset_password_view.dart';
+import 'package:flutter_template/views/pages/Authentication/ForgetPassword/succes_reset_view.dart';
 import 'package:flutter_template/views/pages/nav_bottom_guest.dart';
 import 'package:flutter_template/views/pages/profile/edit_profile_view.dart';
 import 'package:flutter_template/views/views.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -78,6 +81,11 @@ class MyApp extends StatelessWidget {
             HelpEmailView.id: (context) => const HelpEmailView(),
             EditProfile.id: (context) => const EditProfile(),
             AdminHomeView.id: (context) => const AdminHomeView(),
+            ForgetPasswordView.id: (context) => const ForgetPasswordView(),
+            CodeTappingView.id: (context) => const CodeTappingView(),
+            ResetPasswordView.id: (context) => const ResetPasswordView(),
+            SuccessResetPasswordView.id: (context) =>
+                const SuccessResetPasswordView(),
           },
         ),
       ),

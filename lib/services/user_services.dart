@@ -229,4 +229,55 @@ class UserServices {
       // }
     } catch (exception) {}
   }
+
+  static Future<Object?> checkUserByEmail({
+    required String endpoint,
+    required String email,
+  }) async {
+    Map<String, String> requestHeaders = {
+      HttpHeaders.contentTypeHeader: " application/json",
+      "email": email
+    };
+    Uri uri = Uri.http(endpoint, USEREXIST);
+    var body = {"email": email};
+    try {
+      var response = await http.get(uri, headers: requestHeaders);
+      if (response.statusCode == HttpStatus.ok) {
+        return "true";
+      } else if (response.statusCode == HttpStatus.notFound) {
+        return "false";
+      } else {
+        return "Failure";
+      }
+    } catch (exception) {
+      return "Failure";
+    }
+  }
+
+  static Future<String?> changePasssword({
+    required String email,
+    required String password,
+    required String endpoint,
+  }) async {
+    Map<String, String> requestHeaders = {
+      HttpHeaders.contentTypeHeader: " application/json",
+    };
+    Uri uri = Uri.http(endpoint, UPDATEPASSWORD);
+    var body = {
+      "email": email,
+      "password": password,
+    };
+    try {
+      var response =
+          await http.put(uri, headers: requestHeaders, body: jsonEncode(body));
+
+      if (response.statusCode == HttpStatus.ok) {
+        return "Success";
+      } else {
+        return "Failure";
+      }
+    } catch (exception) {
+      return "Failure";
+    }
+  }
 }

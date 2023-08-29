@@ -5,6 +5,7 @@ import 'package:flutter_template/viewModel/users_view_model.dart';
 import 'package:flutter_template/views/components/custom_button.dart';
 import 'package:flutter_template/views/components/custom_text_form_field.dart';
 import 'package:flutter_template/views/components/gradiant_custom_button.dart';
+import 'package:flutter_template/views/pages/Authentication/ForgetPassword/forget_password_view.dart';
 import 'package:flutter_template/views/pages/Authentication/sign_up_view.dart';
 import 'package:flutter_template/views/views.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -270,6 +271,39 @@ class _LoginViewState extends State<LoginView> {
                           },
                           child: Text(
                             "Sign Up",
+                            style: GoogleFonts.poppins(
+                              color: const Color(0xFFFFFFFF),
+                              fontWeight: FontWeight.w700,
+                              fontSize: SizeConfig.kDefaultSize * 4,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: SizeConfig.safeBlockVertical * 1,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Forget password? ",
+                          style: GoogleFonts.poppins(
+                            color: const Color(0xFFFFFFFF),
+                            fontWeight: FontWeight.w400,
+                            fontSize: SizeConfig.kDefaultSize * 4,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                            Navigator.pushNamed(
+                              context,
+                              ForgetPasswordView.id,
+                            );
+                          },
+                          child: Text(
+                            "Click here",
                             style: GoogleFonts.poppins(
                               color: const Color(0xFFFFFFFF),
                               fontWeight: FontWeight.w700,

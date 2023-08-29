@@ -21,6 +21,8 @@ class EventsModel {
     required this.image,
     required this.likes,
     required this.unlikes,
+    required this.latitude,
+    required this.longitude,
     required this.createdAt,
     required this.updatedAt,
     required this.v,
@@ -30,6 +32,8 @@ class EventsModel {
   String eventName;
   String eventLocation;
   int eventPrice;
+  int latitude;
+  int longitude;
   DateTime eventDate;
   String eventStartTime;
   String eventEndTime;
@@ -47,6 +51,8 @@ class EventsModel {
         eventName: json["eventName"],
         eventLocation: json["eventLocation"],
         eventPrice: json["eventPrice"],
+        latitude: json["latitude"],
+        longitude: json["longitude"],
         eventDate: DateTime.parse(json["eventDate"]),
         eventStartTime: json["eventStartTime"],
         eventEndTime: json["eventEndTime"],
@@ -70,6 +76,8 @@ class EventsModel {
         "eventName": eventName,
         "eventLocation": eventLocation,
         "eventPrice": eventPrice,
+        "latitude": latitude,
+        "longitude": longitude,
         "eventDate": eventDate,
         "eventStartTime": eventStartTime,
         "eventEndTime": eventEndTime,

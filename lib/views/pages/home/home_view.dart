@@ -48,6 +48,8 @@ class _HomeViewState extends State<HomeView> {
       eventName: "I-fest²",
       eventLocation: "MAHDIA PALACE",
       eventPrice: 0,
+      latitude: 0,
+      longitude: 0,
       eventDate: DateTime.parse('2023-03-17'),
       eventStartTime: "8:00",
       eventEndTime: "eventEndTime",

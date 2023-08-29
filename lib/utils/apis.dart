@@ -9,6 +9,8 @@ const String LOGIN = "/user/login/";
 const String SIGNUP = "/user/signup";
 const String USERDATAPROTECTED = "/user/protected/";
 const String UPDATEPROFILE = "/user/updateProfile/";
+const String USEREXIST = "/user/userExist/";
+const String UPDATEPASSWORD = "/user/updatePassword/";
 //general planing
 const String POSTSCHEDULE = "/schedule/addSchedule/";
 const String GETALLGENERALPLANNING = "/generalPlaning/getAllGeneralPlaning/";

@@ -31,6 +31,13 @@ abstract class UsersRepository {
     String lastName,
     int phoneNumber,
   );
+  checkUserByEmail(
+    String email,
+  );
+  changePassword(
+    String email,
+    String password,
+  );
 }
 
 class UsersViewModel with ChangeNotifier implements UsersRepository {
@@ -39,6 +46,8 @@ class UsersViewModel with ChangeNotifier implements UsersRepository {
   String? _name;
   String? _email;
   bool? _loading = false;
+  String? _exist;
+  String? _resultMessage;
 
   setLoggedIn(String loggedin) {
     _loggedIn = loggedin;
@@ -59,6 +68,24 @@ class UsersViewModel with ChangeNotifier implements UsersRepository {
 
   bool get Loading {
     return _loading!;
+  }
+
+  String get resultMessage {
+    return _resultMessage!;
+  }
+
+  String get exist {
+    return _exist!;
+  }
+
+  setExist(String value) {
+    _exist = value;
+    notifyListeners();
+  }
+
+  setResultMessage(String result) {
+    _resultMessage = result;
+    notifyListeners();
   }
 
   setLoading(bool type) {
@@ -129,7 +156,35 @@ class UsersViewModel with ChangeNotifier implements UsersRepository {
   @override
   Notif(String notif) async {
     setLoading(true);
-    var user = await UserServices.notification(localURL, notif);
+    var user = await UserServices.notification(
+      localURL,
+      notif,
+    );
+    setLoading(false);
+  }
+
+  @override
+  checkUserByEmail(String email) async {
+    setLoading(true);
+
+    var result = await UserServices.checkUserByEmail(
+      email: email,
+      endpoint: localURL,
+    );
+    setExist(result.toString());
+    setLoading(false);
+  }
+
+  @override
+  changePassword(String email, String password) async {
+    setLoading(true);
+
+    var result = await UserServices.changePasssword(
+      email: email,
+      password: password,
+      endpoint: localURL,
+    );
+    setResultMessage(result!);
     setLoading(false);
   }
 }
